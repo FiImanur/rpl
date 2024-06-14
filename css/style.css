@@ -1,0 +1,26 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #4B515D;
+}
+
+.card {
+  border-radius: 35px;
+  color: #4B515D;
+}
+
+.display-4 {
+  font-weight: bold;
+  color: #1C2331;
+}
+
+.small {
+  color: #868B94;
+}
+
+.flex-grow-1 {
+  font-size: 1rem;
+}
+
+#weather-icon {
+  width: 100px;
+}
