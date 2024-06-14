@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>Weather Dashboard</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+  <link rel="stylesheet" href="css/bootstrap-weather.min.css" />
+  <style>
+    .detail-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 10px;
+      color: #676c76;
+    }
+
+    .detail-bubble {
+      display: none;
+      background-color: #dfdfdf;
+      color: #4B515D;
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 10px;
+      transition: all 1s ease-in-out;
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-20px);
+      overflow: hidden;
+    }
+
+    .detail-bubble.show {
+      display: block;
+      max-height: 300px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .detail-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+    }
+
+    .detail-slide {
+      display: flex;
+      width: 300%;
+      transition: transform 0.5s ease;
+    }
+
+    .detail-item {
+      width: 100%;
+      padding: 0 10px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .detail-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .detail-navigation i {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #636568;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="vh-100" style="background-color: #4B515D;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-8 col-lg-6 col-xl-4">
+          <div class="card" style="color: #4B515D; border-radius: 35px; transition: all 1s ease-in-out;">
+            <div class="card-body p-4">
+              <div class="d-flex">
+                <h6 class="flex-grow-1" id="location">Location</h6>
+                <h6 id="time">00:00</h6>
+              </div>
+              <div class="d-flex flex-column text-center mt-5 mb-4">
+                <h6 class="display-4 mb-0 font-weight-bold" id="temperature" style="color: #1C2331;"> --°C </h6>
+                <span class="small" id="description" style="color: #868B94">Description</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1" style="font-size: 1rem;">
+                  <div><i class="fas fa-wind fa-fw" style="color: #868B94;"></i> <span class="ms-1" id="wind"> -- km/h </span></div>
+                  <div><i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1" id="humidity"> --% </span></div>
+                </div>
+                <div>
+                  <img src="https://www.weatherbit.io/static/img/icons/t04n.png" id="weather-icon" width="100px">
+                </div>
+              </div>
+              <div class="detail-icon" onclick="toggleDetails()">
+                <i class="fas fa-ellipsis-h"></i>
+              </div>
+              <div class="detail-bubble" id="detail-bubble">
+                <div class="detail-content">
+                  <div class="detail-slide" id="detail-slide">
+                    <div class="detail-item">
+                      <div>
+                        <div>Longitude: <span id="lon">--</span></div>
+                        <div>Latitude: <span id="lat">--</span></div>
+                      </div>
+                    </div>
+                    <div class="detail-item">
+                      <div>Feels Like: <span id="feels-like">--°C</span></div>
+                    </div>
+                    <div class="detail-item">
+                      <div>
+                        <div>Sunrise: <span id="sunrise">--</span></div>
+                        <div>Sunset: <span id="sunset">--</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="detail-navigation">
+                  <i class="fas fa-arrow-left" onclick="previousDetail()"></i>
+                  <i class="fas fa-arrow-right" onclick="nextDetail()"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="text/javascript" src="js/weather.js"></script>
+  <script>
+    let currentSlideIndex = 0;
+
+    function toggleDetails() {
+      const detailBubble = document.getElementById('detail-bubble');
+      const card = detailBubble.closest('.card');
+      if (detailBubble.classList.contains('show')) {
+        detailBubble.style.maxHeight = '0';
+        detailBubble.style.opacity = '0';
+        detailBubble.style.transform = 'translateY(-20px)';
+        card.style.transform = 'translateY(0)';
+        setTimeout(() => {
+          detailBubble.classList.remove('show');
+        }, 1000);
+      } else {
+        detailBubble.classList.add('show');
+        setTimeout(() => {
+          detailBubble.style.maxHeight = '300px';
+          detailBubble.style.opacity = '1';
+          detailBubble.style.transform = 'translateY(0)';
+          card.style.transform = 'translateY(20px)';
+        }, 10);
+      }
+    }
+
+    function updateSlide() {
+      const detailSlide = document.getElementById('detail-slide');
+      detailSlide.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+    }
+
+    function nextDetail() {
+      currentSlideIndex = (currentSlideIndex + 1) % 3;
+      updateSlide();
+    }
+
+    function previousDetail() {
+      currentSlideIndex = (currentSlideIndex - 1 + 3) % 3;
+      updateSlide();
+    }
+
+    function populateDetails() {
+      document.getElementById('lon').textContent = weather.lon;
+      document.getElementById('lat').textContent = weather.lat;
+      document.getElementById('feels-like').textContent = `${weather.feelsLike}°C`;
+      document.getElementById('sunrise').textContent = weather.getFormattedTime(weather.sunrise);
+      document.getElementById('sunset').textContent = weather.getFormattedTime(weather.sunset);
+    }
+
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('time').textContent = `${hours}:${minutes}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch('weather.json')
+        .then(response => response.json())
+        .then(data => {
+          weather = new Weather(data);
+          weather.updateUI();
+          populateDetails();
+        })
+        .catch(error => console.error('Error fetching weather data:', error));
+
+      updateTime();
+      setInterval(updateTime, 60000);
+    });
+
+    let startX;
+
+    document.addEventListener('touchstart', function(event) {
+      startX = event.touches[0].clientX;
+    });
+
+    document.addEventListener('touchend', function(event) {
+      const endX = event.changedTouches[0].clientX;
+      if (startX - endX > 50) {
+        nextDetail();
+      } else if (endX - startX > 50) {
+        previousDetail();
+      }
+    });
+  </script>
+</body>
+
+</html>
