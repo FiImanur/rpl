@@ -196,10 +196,17 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-      fetch('https://mgm.ub.ac.id/weather.json')
-        .then(response => response.json())
+      fetch('https://api.allorigins.win/get?url=https://mgm.ub.ac.id/weather.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+        })
         .then(data => {
-          weather = new Weather(data);
+          const weatherData = JSON.parse(data.contents);
+          console.log('API Response:', weatherData);
+          weather = new Weather(weatherData);
           weather.updateUI();
           populateDetails();
         })
