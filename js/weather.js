@@ -43,7 +43,7 @@ class Weather {
 let weather;
 
 document.addEventListener("DOMContentLoaded", function() {
-  fetch('weather.json')
+  fetch('json/weather.json')
     .then(response => response.json())
     .then(data => {
       weather = new Weather(data);
